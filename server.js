@@ -1,5 +1,3 @@
-// server.js
-
 const express = require('express');
 const app = express();
 const { createServer } = require('http');
@@ -10,14 +8,16 @@ const port = 3001;
 
 const io = new Server(server, {
   cors: {
-    origin: "*", // Allow all origins
-    origin: "https://chat-ae.vercel.app", // Ensure this matches your client-side URL
+    origin: "https://chat-ae.vercel.app", // Allow requests only from your frontend URL
     methods: ["GET", "POST"],
-  }
+    allowedHeaders: ["Content-Type"],
+    credentials: true // Enable this if you need to handle cookies or sessions
+  },
+  transports: ['websocket', 'polling'] // Ensure both WebSocket and polling work
 });
 
-io.on('connection', socket => {
-  console.log(`a user connected: ${socket.id}`);
+io.on('connection', (socket) => {
+  console.log(`A user connected: ${socket.id}`);
 
   socket.on("join_room", ({ user, room }) => {
     socket.join(room);
@@ -31,7 +31,7 @@ io.on('connection', socket => {
   });
 
   socket.on('disconnect', () => {
-    console.log(`user disconnected: ${socket.id}`);
+    console.log(`User disconnected: ${socket.id}`);
   });
 });
 
