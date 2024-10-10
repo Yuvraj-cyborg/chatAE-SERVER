@@ -11,7 +11,7 @@ const port = 3001;
 const io = new Server(server, {
   cors: {
     origin: "*", // Allow all origins
-    origin: "http://localhost:3000", // Ensure this matches your client-side URL
+    origin: "https://chat-ae.vercel.app", // Ensure this matches your client-side URL
     methods: ["GET", "POST"],
   }
 });
