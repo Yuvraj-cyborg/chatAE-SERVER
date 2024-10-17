@@ -1,20 +1,21 @@
+require('dotenv').config();
 const express = require('express');
-const app = express();
 const { createServer } = require('http');
-const server = createServer(app);
 const { Server } = require('socket.io');
 
-const port = 3001;
+const app = express();
+const port = process.env.PORT || 3001; // Use PORT from .env or default to 3001
+const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://chat-ae.vercel.app", // Allow requests from your frontend
+    origin: process.env.CORS_ORIGIN, // Use CORS_ORIGIN from .env
     methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
-    credentials: true
+    credentials: true,
   },
-  transports: ['websocket', 'polling']
+  transports: process.env.SOCKET_TRANSPORTS ? process.env.SOCKET_TRANSPORTS.split(',') : ['websocket', 'polling'],
 });
+
 
 io.on('connection', (socket) => {
   console.log(`A user connected: ${socket.id}`);
